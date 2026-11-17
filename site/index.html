@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Consultez les joueurs, emplacements et objets d'une partie Archipelago." />
+    <meta name="description" content="Consultez les joueurs, emplacements et checks d'une partie Archipelago." />
     <meta name="theme-color" content="#080d18" />
     <title>Archipelago — tableau de bord</title>
     <link rel="stylesheet" href="./styles.css" />
@@ -15,7 +15,7 @@
         <div>
           <p class="eyebrow">ARCHIPELAGO · MULTIWORLD</p>
           <h1>Tableau de bord</h1>
-          <p class="intro">Explorez les joueurs, les checks listés dans le spoiler et les objets de la partie.</p>
+          <p class="intro">Explorez les joueurs, les checks accomplis et les objets de la partie.</p>
         </div>
         <label class="upload-button" for="spoiler-file">Charger un autre spoiler</label>
         <input id="spoiler-file" type="file" accept=".txt,text/plain" />
@@ -28,6 +28,34 @@
       <section id="error" class="notice error" role="alert" hidden></section>
 
       <section id="dashboard" hidden>
+        <section class="panel live-panel" aria-labelledby="live-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">SUIVI AUTOMATIQUE</p>
+              <h2 id="live-title">Checks en direct</h2>
+            </div>
+            <span id="live-status" class="live-status" role="status" aria-live="polite">Non connecté</span>
+          </div>
+          <p class="muted live-description">Le tableau de bord se connecte au serveur Archipelago en lecture seule et suit l’état des emplacements. Renseignez l’adresse, puis vérifiez les noms des slots pour chaque joueur.</p>
+          <form id="connection-form" class="connection-form">
+            <label>Adresse du serveur (wss://)
+              <input id="server-url" type="url" placeholder="wss://archipelago.example.org:38281" autocomplete="url" required />
+            </label>
+            <label>Mot de passe <span class="optional">(si nécessaire)</span>
+              <input id="server-password" type="password" autocomplete="current-password" />
+            </label>
+            <fieldset class="slot-mappings">
+              <legend>Correspondance des slots (par défaut : nom du spoiler)</legend>
+              <div id="slot-mappings"></div>
+            </fieldset>
+            <div class="connection-actions">
+              <button id="connect-button" class="primary-button" type="submit">Suivre les checks</button>
+              <button id="disconnect-button" class="secondary-button" type="button" disabled>Déconnecter</button>
+            </div>
+          </form>
+          <p class="privacy-note">Le mot de passe reste dans cette page et est envoyé uniquement au serveur indiqué. La page ouvre une connexion de suivi par joueur. Ne connectez-vous qu’à un serveur auquel vous êtes autorisé à accéder.</p>
+        </section>
+
         <div id="summary" class="summary-grid"></div>
 
         <section class="panel">
@@ -40,10 +68,17 @@
 
         <section class="panel">
           <div class="section-heading list-heading">
-            <div><p class="eyebrow">PLACEMENTS DU SPOILER</p><h2>Emplacements</h2></div>
+            <div><p class="eyebrow">EMPLACEMENTS DU SPOILER</p><h2>Emplacements</h2></div>
             <div class="filters">
               <label>Joueur
                 <select id="player-filter"><option value="">Tous</option></select>
+              </label>
+              <label>État du check
+                <select id="check-filter">
+                  <option value="all">Tous</option>
+                  <option value="checked">Accomplis</option>
+                  <option value="unchecked">À faire</option>
+                </select>
               </label>
               <label>Rechercher
                 <input id="search" type="search" placeholder="Emplacement ou objet" />
@@ -51,11 +86,11 @@
             </div>
           </div>
 
-          <p class="spoiler-warning">Les objets affichés proviennent du spoiler et peuvent révéler les placements de la partie. Les checks accomplis en direct ne sont pas encore suivis.</p>
+          <p class="spoiler-warning">Les objets proviennent du spoiler et peuvent révéler les placements. Les checks sont lus sur le serveur; ils ne sont jamais envoyés par le dashboard.</p>
 
           <div class="table-scroll">
             <table>
-              <thead><tr><th>Joueur / jeu</th><th>Emplacement</th><th>Objet placé</th><th>Destinataire</th></tr></thead>
+              <thead><tr><th>Joueur / jeu</th><th>Emplacement</th><th>État</th><th>Objet placé</th><th>Destinataire</th></tr></thead>
               <tbody id="locations"></tbody>
             </table>
           </div>
@@ -64,7 +99,7 @@
         </section>
       </section>
 
-      <footer>Dashboard statique · progression du serveur Archipelago en direct à venir</footer>
+      <footer>Dashboard statique · progression en direct du serveur Archipelago</footer>
     </main>
   </body>
 </html>
