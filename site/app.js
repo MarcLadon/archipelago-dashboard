@@ -8,12 +8,18 @@ const searchInput = document.querySelector("#search");
 const connectionForm = document.querySelector("#connection-form");
 const serverUrlInput = document.querySelector("#server-url");
 const passwordInput = document.querySelector("#server-password");
+const slotNameInput = document.querySelector("#slot-name");
 const connectButton = document.querySelector("#connect-button");
 const disconnectButton = document.querySelector("#disconnect-button");
 
 let model = null;
 let trackingGeneration = 0;
 let live = createEmptyTracking();
+
+function getSlotName(playerName) {
+  const override = slotNameInput.value.trim();
+  return override || playerName;
+}
 
 fileInput.addEventListener("change", async () => {
   const file = fileInput.files?.[0];
@@ -334,6 +340,7 @@ async function startLiveTracking(event) {
   live.failedPlayers = new Map();
   passwordInput.disabled = true;
   serverUrlInput.disabled = true;
+  slotNameInput.disabled = true;
   connectButton.disabled = true;
   disconnectButton.disabled = false;
   renderDashboard(model);
@@ -422,7 +429,7 @@ function handleServerPacket(packet, record, password, generation) {
     record.socket.send(JSON.stringify([{
       cmd: "Connect",
       game: player.game,
-      name: player.name,
+      name: getSlotName(player.name),
       password,
       uuid,
       version: { class: "Version", major: record.version.major, minor: record.version.minor, build: record.version.build },
@@ -434,7 +441,7 @@ function handleServerPacket(packet, record, password, generation) {
   }
 
   if (packet.cmd === "ConnectionRefused") {
-    failPlayer(player, `Connexion refusée : ${(packet.errors || ["erreur inconnue"]).join(", ")}. Vérifiez le nom du joueur et le mot de passe.`, generation);
+    failPlayer(player, `Connexion refusée : ${(packet.errors || ["erreur inconnue"]).join(", ")}. Vérifiez le nom du slot Archipelago et le mot de passe.`, generation);
     return;
   }
 
@@ -496,11 +503,12 @@ function disconnectLiveTracking(showMessage) {
   live = createEmptyTracking();
   passwordInput.disabled = false;
   serverUrlInput.disabled = false;
+  slotNameInput.disabled = false;
   connectButton.disabled = false;
   disconnectButton.disabled = true;
   if (model) {
     renderDashboard(model);
-    setTrackingStatus(showMessage ? "Déconnecté" : "Non connecté", showMessage ? "idle" : "idle");
+    setTrackingStatus(showMessage ? "Déconnecté" : "Non connecté", "idle");
   }
 }
 
@@ -520,4 +528,3 @@ window.addEventListener("beforeunload", () => disconnectLiveTracking(false));
 if (window.WebSocket === undefined) {
   showError("Ce navigateur ne supporte pas les WebSockets, ce qui empêche le suivi live des checks.");
 }
-
