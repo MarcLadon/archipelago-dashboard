@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Consultez les joueurs, emplacements et objets d'une partie Archipelago." />
+    <meta name="theme-color" content="#080d18" />
+    <title>Archipelago — tableau de bord</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">ARCHIPELAGO · MULTIWORLD</p>
+          <h1>Tableau de bord</h1>
+          <p class="intro">Explorez les joueurs, les checks listés dans le spoiler et les objets de la partie.</p>
+        </div>
+        <label class="upload-button" for="spoiler-file">Charger un autre spoiler</label>
+        <input id="spoiler-file" type="file" accept=".txt,text/plain" />
+      </header>
+
+      <section id="welcome" class="notice" aria-live="polite">
+        <strong>Chargement du spoiler de la partie…</strong>
+        <span>Le site charge le fichier public Spoiler.txt.</span>
+      </section>
+      <section id="error" class="notice error" role="alert" hidden></section>
+
+      <section id="dashboard" hidden>
+        <div id="summary" class="summary-grid"></div>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div><p class="eyebrow">VUE D’ENSEMBLE</p><h2>Joueurs</h2></div>
+            <span id="seed-label" class="seed-label"></span>
+          </div>
+          <div id="players" class="players-grid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading list-heading">
+            <div><p class="eyebrow">PLACEMENTS DU SPOILER</p><h2>Emplacements</h2></div>
+            <div class="filters">
+              <label>Joueur
+                <select id="player-filter"><option value="">Tous</option></select>
+              </label>
+              <label>Rechercher
+                <input id="search" type="search" placeholder="Emplacement ou objet" />
+              </label>
+            </div>
+          </div>
+
+          <p class="spoiler-warning">Les objets affichés proviennent du spoiler et peuvent révéler les placements de la partie. Les checks accomplis en direct ne sont pas encore suivis.</p>
+
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Joueur / jeu</th><th>Emplacement</th><th>Objet placé</th><th>Destinataire</th></tr></thead>
+              <tbody id="locations"></tbody>
+            </table>
+          </div>
+
+          <p id="result-count" class="result-count"></p>
+        </section>
+      </section>
+
+      <footer>Dashboard statique · progression du serveur Archipelago en direct à venir</footer>
+    </main>
+  </body>
+</html>
